@@ -1,5 +1,7 @@
 # dsh-witness
 
+> **Part of the [DSH plugin suite](https://github.com/Wang-Lin-Chang)** — six Apache-2.0 plugins for DeepSeek Harness. · DSH 插件套件之一：六个 Apache-2.0 插件。
+
 > Crash-surviving background jobs for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness), where **the filesystem is the source of truth**. Cross-restart adoption, autopsy reports, sandboxed execution, event sourcing — battle-tested on Windows 11 NTFS, with sandbox backends for [Linux](https://github.com/Wang-Lin-Chang/dsh-cross-platform) and [macOS](https://github.com/Wang-Lin-Chang/dsh-macos).
 >
 > 给 DeepSeek Harness 的崩溃存活后台任务：**文件系统即真相源**。跨重启收养、尸检报告、沙箱执行、事件溯源——Windows 11 NTFS 实测；沙箱后端覆盖 [Linux](https://github.com/Wang-Lin-Chang/dsh-cross-platform) 与 [macOS](https://github.com/Wang-Lin-Chang/dsh-macos)。
