@@ -5,6 +5,7 @@
 > 给 DeepSeek Harness 的崩溃存活后台任务：**文件系统即真相源**。跨重启收养、尸检报告、沙箱执行、事件溯源——Windows 11 NTFS 实测。
 
 [![license](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](./LICENSE)
+[![ci](https://github.com/6565dsdsadsde/dsh-witness/actions/workflows/ci.yml/badge.svg)](https://github.com/6565dsdsadsde/dsh-witness/actions/workflows/ci.yml)
 [![topic: dsh-plugin](https://img.shields.io/badge/topic-dsh--plugin-4d6bfe)](https://github.com/topics/dsh-plugin)
 [![topic: dsh](https://img.shields.io/badge/topic-dsh-4d6bfe)](https://github.com/topics/dsh)
 
@@ -58,7 +59,7 @@ jobs/
 ## 快速开始 / Quick start
 
 ```sh
-dsh plugin --profile <name> add "github:<owner>/dsh-witness#v0.1.0"
+dsh plugin --profile <name> add "github:6565dsdsadsde/dsh-witness#v0.2.0"
 ```
 
 仓库提交了编译产物（`lib/`），git 安装无需构建步骤。
