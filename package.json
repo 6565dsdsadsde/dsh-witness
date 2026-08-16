@@ -1,0 +1,38 @@
+{
+  "name": "dsh-witness",
+  "version": "0.1.0",
+  "description": "Witness jobs for DeepSeek Harness: crash-surviving background tasks where the filesystem is the source of truth - cross-restart adoption, autopsy reports, sandboxed execution, event sourcing. Windows NTFS battle-tested.",
+  "type": "module",
+  "main": "lib/WitnessJobRegistry.js",
+  "types": "lib/WitnessJobRegistry.d.ts",
+  "exports": {
+    ".": "./lib/WitnessJobRegistry.js",
+    "./runner": "./detach-runner.cjs"
+  },
+  "files": [
+    "lib/",
+    "src/",
+    "detach-runner.cjs",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check": "tsc --noEmit -p tsconfig.json",
+    "test": "node --experimental-strip-types test/witness-final-test.ts"
+  },
+  "keywords": [
+    "dsh-plugin",
+    "dsh",
+    "deepseek-harness",
+    "background-jobs",
+    "sandbox",
+    "reliability",
+    "windows-acl",
+    "job-queue"
+  ],
+  "license": "Apache-2.0",
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.0",
+    "@deepseek-ai/dsh-jobs": "^0.1.0-rc.6"
+  }
+}
