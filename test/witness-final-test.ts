@@ -1,15 +1,12 @@
-// test/witness-final-test.ts —— Witness 范式最终验收（老哥 v1.0 计划 12 项，Windows 真机版）
+// test/witness-final-test.ts —— Witness 范式最终验收（12 项，Windows 真机版）
 // A 持久化 4 项 / B 收养协调 4 项 / C 事件溯源 2 项 / D 沙箱边界 2 项
 // 隔离原则：每块独立 jobsRoot/index.db（防跨测试污染）；B-02 特例（跨会话收养语义需共享 root）
-// CI 环境说明：沙箱组 D 依赖非管理员 Windows ACL 语义，CI runner 权限不保证 → CI 下跳过 D 组并披露（A/B/C 全跑）
 import { WitnessJobRegistry } from '../lib/WitnessJobRegistry.js'
 import * as fs from 'node:fs'
 import * as os from 'node:os'
 import * as path from 'node:path'
 import { spawn } from 'node:child_process'
 
-const inCI = process.env.CI === 'true' || process.env.GITHUB_ACTIONS === 'true'
-let skippedD = 0
 let passed = 0, failed = 0
 function check(name: string, cond: boolean, detail = '') {
   if (cond) passed++
@@ -250,10 +247,6 @@ console.log('='.repeat(72))
 }
 
 // ===== D-01 防覆盖 =====
-if (inCI) {
-  console.log('  ⏭️ D-01/D-02 沙箱组在 CI 环境跳过（需非管理员 Windows ACL 语义，本地实测）')
-  skippedD = 2
-} else {
 {
   const root = mkRoot()
   const r1 = reg(root)
@@ -280,10 +273,9 @@ if (inCI) {
   if (statOk) check('D-02 防删: 内容完好', fs.readFileSync(outFile, 'utf-8').includes('KEEP-ME'))
   r1.close()
 }
-}
 
 console.log('='.repeat(72))
-console.log(`  最终报告: ${passed} 通过 / ${failed} 失败 / ${passed + failed} 总计${skippedD > 0 ? `（CI 跳过沙箱组 ${skippedD} 断言）` : ''}`)
+console.log(`  最终报告: ${passed} 通过 / ${failed} 失败 / ${passed + failed} 总计`)
 console.log(`  通过率: ${(passed / (passed + failed) * 100).toFixed(1)}%`)
 console.log('='.repeat(72))
 for (const r of allRegs) { try { r.close() } catch {} }

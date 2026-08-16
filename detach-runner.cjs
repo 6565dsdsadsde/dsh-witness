@@ -1,7 +1,7 @@
-// detach-runner.cjs —— 可恢复执行的进程托管包装（第 1 炉判决产物 + 三金实装：锁文件协议）
+// detach-runner.cjs —— 可恢复执行的进程托管包装（EXP-A1 判决产物 + 锁文件协议实装）
 // 被 detached spawn（node 子进程 detached 存活 ✅），托管 powershell：
 //   powershell 用 pipe stdio（可靠，fd stdio 会静默丢输出）→ 转发到输出文件 → 退出码写 exit 文件
-// 锁文件协议（Witness 范式三金之一）：
+// 锁文件协议（Witness 范式三证据之一）：
 //   · 启动时创建 spawnDir/lock（内容 "pid:startTimeTicks"）——"我是谁"的旁证（DB 之外第二真相）
 //   · 每 60s touch 锁 mtime（静默任务保护：观测式心跳；走预打开 fd，deny 后不查 ACL）
 //   · powershell 正常退出 → 守卫句柄级删锁文件（完成信号：收养时锁在 = 未正常完成）
