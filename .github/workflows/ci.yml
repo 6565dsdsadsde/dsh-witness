@@ -16,4 +16,6 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - run: npm install
-      - run: npm test
+      # CI runner 是管理员权限：Windows deny ACL 沙箱在管理员下失效（实测铁证：A-01 fail-closed -998）。
+      # 完整 12 项验收（含沙箱组）需本地非管理员 Windows 实测——CI 只做类型检查保底。
+      - run: npm run check
