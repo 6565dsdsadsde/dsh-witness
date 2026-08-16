@@ -1,4 +1,4 @@
-// detach-runner.cjs —— 可恢复执行的进程托管包装（EXP-A1 判决产物 + 锁文件协议实装）
+// detach-runner.cjs —— 可恢复执行的进程托管包装（EXP-1 判决产物 + 锁文件协议实装）
 // 被 detached spawn（node 子进程 detached 存活 ✅），托管 powershell：
 //   powershell 用 pipe stdio（可靠，fd stdio 会静默丢输出）→ 转发到输出文件 → 退出码写 exit 文件
 // 锁文件协议（Witness 范式三证据之一）：

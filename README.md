@@ -116,7 +116,8 @@ Witness 核心（目录真相源、三证据收养、尸检、事件溯源）是
 
 ## 诚实边界 / Honest boundaries
 
-- **平台实测面**：Windows 实测于 Windows 11 NTFS + PowerShell 5.1 + Node 25.8；Linux 后端实测于 GitHub Actions ubuntu-latest（34/34 ×3）；macOS 后端实测于 GitHub Actions macos-latest（macOS 26.5.2 arm64，34/34 ×3）。每个后端的实测环境与边界以各自仓库的 README/EXPERIMENTS 为准。
+- **平台实测面**：Windows 实测于 Windows 11 NTFS + PowerShell 5.1 + Node 25.8（本仓实验账本 EXP-1~EXP-8）；Linux 后端实测于 GitHub Actions ubuntu-latest（34/34 ×3）；macOS 后端实测于 GitHub Actions macos-latest（macOS 26.5.2 arm64，34/34 ×3）。每个后端的实测环境与边界以各自仓库的 README/EXPERIMENTS 为准。
+- **离线适用面**：架构上无网络依赖（目录真相源 + 本地 SQLite，无云服务、无远程协调）；数天级断网长跑未实测，不声称。
 - **任意代码自救超出 ACL 层能力**——任务加载原生代码（P/Invoke）可以以文件属主身份自救 ACL。留痕检测把这种伪造变成可见的 `tampered` 判决而不是默默信任；任意代码层的完全限制是受限 token 的活（见官方 Harness 沙箱配方）。
 - 任务永远可以毁掉自己的输出——那只会伤到它自己，并且证据链全程可见。
 
