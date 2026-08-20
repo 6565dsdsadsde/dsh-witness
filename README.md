@@ -1,10 +1,8 @@
 # dsh-witness
 
-> **Part of the [DSH plugin suite](https://github.com/Wang-Lin-Chang)** — six Apache-2.0 plugins for DeepSeek Harness. · DSH 插件套件之一：六个 Apache-2.0 插件。
-
-> Crash-surviving background jobs for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness), where **the filesystem is the source of truth**. Cross-restart adoption, autopsy reports, sandboxed execution, event sourcing — battle-tested on Windows 11 NTFS, with sandbox backends for [Linux](https://github.com/Wang-Lin-Chang/dsh-cross-platform) and [macOS](https://github.com/Wang-Lin-Chang/dsh-macos).
+> Crash-surviving background jobs for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness), where **the filesystem is the source of truth**. Cross-restart adoption, autopsy reports, sandboxed execution, event sourcing — battle-tested on Windows 11 NTFS.
 >
-> 给 DeepSeek Harness 的崩溃存活后台任务：**文件系统即真相源**。跨重启收养、尸检报告、沙箱执行、事件溯源——Windows 11 NTFS 实测；沙箱后端覆盖 [Linux](https://github.com/Wang-Lin-Chang/dsh-cross-platform) 与 [macOS](https://github.com/Wang-Lin-Chang/dsh-macos)。
+> 给 DeepSeek Harness 的崩溃存活后台任务：**文件系统即真相源**。跨重启收养、尸检报告、沙箱执行、事件溯源——Windows 11 NTFS 实测。
 
 [![license](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](./LICENSE)
 [![ci](https://github.com/Wang-Lin-Chang/dsh-witness/actions/workflows/ci.yml/badge.svg)](https://github.com/Wang-Lin-Chang/dsh-witness/actions/workflows/ci.yml)
@@ -22,6 +20,17 @@ Harness 内核自带的后台 *jobs* 是 fire-and-forget 工具执行（能读�
 | 两个任务挤在一个文件夹互相覆盖；40 分钟长跑交付坏产物（第三方实测报告）| **每任务一个隔离目录** + O_EXCL 锁 + 每任务沙箱化 cwd。 |
 | "恢复意味着知道最后完成的步骤和证明输出的证据"（专家建议）| **尸检报告。** 每任务 `autopsy.json`：死因、主证据、判决、死因代码。 |
 | 调度任务静默失败、无审查路径 | **事件溯源。** `events/*.jsonl` 记录每个任务的 started/output/done/adopted/tampered。 |
+
+## 谁适合用它 / Who is this for
+
+- 在 DeepSeek Harness 里跑**长后台任务**（几分钟以上的构建、批处理、数据搬运），被"会话一死任务就死"坑过的人；
+- 被 **force-kill 丢输出尾部**坑过的人——输出游标续读，跨重启不重不漏；
+- 需要事后知道**任务到底怎么死的**的人——`autopsy.json` 尸检：死因、主证据、判决、死因代码；
+- 需要**防伪造留痕**的人——任务自救改证据会被判 `tampered`，而不是被默默信任。
+
+**不适合**：几秒就结束的短命令——官方内置 jobs 已经够用，不必上这套目录协议。
+
+> Runs long background jobs that must survive session/process death, with an autopsy trail instead of silent failure. Not for one-shot quick commands — the built-in jobs suffice there.
 
 ## 真相源：任务目录解剖 / The truth source
 
@@ -104,20 +113,9 @@ reg.close()                               // 停监控定时器
 | 输出读 | 整体读 | 游标增量续读（跨重启） |
 | 对话/引导 | 不能 | 不能（v0）——对话式后台 agent 是 dsh-anchor 的领地 |
 
-## 跨平台后端 / Platform backends
-
-Witness 核心（目录真相源、三证据收养、尸检、事件溯源）是平台无关的；沙箱层按平台选配方，三平台同级：
-
-| 平台 | 沙箱配方 | 后端包 | 验收 |
-|---|---|---|---|
-| Windows | NTFS ACL 六维闭合 + 守卫句柄 | 本仓库（`detach-runner.cjs`）| 12 项 / 34 断言（Windows 11 真机）|
-| Linux | chattr +i + bubblewrap 只读视图 | [dsh-cross-platform](https://github.com/Wang-Lin-Chang/dsh-cross-platform) | 12 项 / 34 断言 ×3 |
-| macOS | chflags uchg + sandbox-exec deny 视图 | [dsh-macos](https://github.com/Wang-Lin-Chang/dsh-macos) | 12 项 / 34 断言 ×3 |
-
 ## 诚实边界 / Honest boundaries
 
-- **平台实测面**：Windows 实测于 Windows 11 NTFS + PowerShell 5.1 + Node 25.8（本仓实验账本 EXP-1~EXP-8）；Linux 后端实测于 GitHub Actions ubuntu-latest（34/34 ×3）；macOS 后端实测于 GitHub Actions macos-latest（macOS 26.5.2 arm64，34/34 ×3）。每个后端的实测环境与边界以各自仓库的 README/EXPERIMENTS 为准。
-- **离线适用面**：架构上无网络依赖（目录真相源 + 本地 SQLite，无云服务、无远程协调）；数天级断网长跑未实测，不声称。
+- **Windows-first。** 实测于 Windows 11 NTFS + PowerShell 5.1 + Node 25.8。Linux/macOS 需要移植：锁协议（O_EXCL+startSec）、沙箱（ACL→其他机制）、runner（detached node+PowerShell）目前都是 Windows 专属。**未实测的平台不声称支持。**
 - **任意代码自救超出 ACL 层能力**——任务加载原生代码（P/Invoke）可以以文件属主身份自救 ACL。留痕检测把这种伪造变成可见的 `tampered` 判决而不是默默信任；任意代码层的完全限制是受限 token 的活（见官方 Harness 沙箱配方）。
 - 任务永远可以毁掉自己的输出——那只会伤到它自己，并且证据链全程可见。
 
